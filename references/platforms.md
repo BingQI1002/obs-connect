@@ -1,53 +1,16 @@
-# 宿主适配
+# 宿主入口
 
-按 2026-11-10 官方文档整理；WorkBuddy 指令字段另经桌面 v5.9.3 实际界面核对。入口核对不代表三个客户端的新对话自动保存均已验收。只处理用户指定的当前宿主。
+只读当前宿主这一行；Skill 目录负责安装，全局入口负责以后任务读取 OBS 规则。
 
-## 先分清三种位置
-
-| 宿主 | 持续行为规则的目标 | 不能拿来替代的记忆位置 |
+| 宿主 | 实际全局入口 | 安装位置 |
 |---|---|---|
-| Codex 本机 | 实际 `CODEX_HOME` 下生效的 `AGENTS.md` 或已有非空 `AGENTS.override.md` | Codex 自动 memories、记忆摘要 |
-| Claude Code 本机 | 用户级 `CLAUDE.md`，默认 `~/.claude/CLAUDE.md` | `projects/*/memory/MEMORY.md` 等自动记忆 |
-| WorkBuddy 桌面 | 设置 → 个性化 → **给 WorkBuddy 的指令** | 长期记忆、`MEMORY.md`、人设设定 |
+| Codex 本机 | 实际 `CODEX_HOME`（默认 `~/.codex`）中的非空 `AGENTS.override.md` 优先，否则 `AGENTS.md`；不新建 override 遮蔽原规则 | 优先宿主安装器，常用 `~/.agents/skills/obs-connect/`，已有受支持位置直接复用 |
+| Claude Code | 实际 `CLAUDE_CONFIG_DIR`（默认 `~/.claude`）中的 `CLAUDE.md`；托管区内独立加入原生 `@绝对路径` 导入，路径空格前加反斜杠，不加引号或代码块 | 实际用户配置目录下 `skills/obs-connect/` |
+| WorkBuddy 桌面 | 设置 → 个性化 → **给 WorkBuddy 的指令** | 优先实际原生导入工具；已有被宿主识别的安装直接复用，否则导入完整 ZIP |
 
-Skill 文件夹只负责发现/调用，以上入口负责以后每个任务的持续规则；文件访问权限另行授权。记忆可能被注入上下文，不能据此把它当成正确的指令字段。
+- 不用自动记忆、人设或项目规则冒充全局入口。WorkBuddy 的 `AGENTS.md` / `.codebuddy` 兼容说明属于代码开发配置，普通办公不能据此宣称全局生效。
+- 文件型入口用正常文件工具，必要时用 `configure_entry.py`；WorkBuddy 用现有设置/电脑操作工具，macOS 可用随包界面后端，详见 [授权方法](permissions.md)。不要猜内部 JSON/数据库字段。
+- 修复误写位置：先存正确入口并读回，再仅移除原位置属于本 Skill 的同目标区块；保留其他内容。
+- 工具只能访问云端时，先说明本机通路未接通。规则文件可读不等于当前任务可写；权限按实际操作申请。
 
-## Codex（本机文件会话）
-
-- 分发：用户从仓库链接要求安装时，由 Agent 使用当前可用安装器或文件工具安装完整 Skill，再在当前对话读本地正文开始接入。常用用户技能位置是 `~/.agents/skills/obs-connect/`；实际安装器选择的已支持位置也可采用。已有同名目录先比对，不覆盖用户改版。已安装后也可调用 `$obs-connect`；安装位置与持久规则位置是两回事。
-- 持久入口：从实际 `CODEX_HOME` 确认 Codex 主目录，未设置时为 `~/.codex`。非空 `AGENTS.override.md` 存在时它优先，否则使用 `AGENTS.md`。不要新建 override 遮蔽原规则，也不要把入口只写入被遮蔽的文件。
-- 原有入口已指向同一库且包含等价要求时直接复用，不再添托管块。不要把保存规则写进自动 memories，也不为接入替换 `model_instructions_file` 或改其他全局运行设置。
-- 阅读当前已知项目规则以发现冲突；不为此遍历所有项目。规则按启动上下文加载，修改后用新会话验证。读取限制或规则截断应作为待处理项，不擅自增大配置限制。
-- 写 OBS 仍需要当前会话的工作目录/额外可写目录/审批允许。只读引用、附件上传或加入项目资料不等于文件写权限。具体界面因客户端而异，按实际可见设置操作；不编造统一按钮。
-- 工作区外的全局入口受限时，按 `permissions.md` 准备文件计划并申请原生审批，由 Agent 在批准后继续写入；不要求用户自己复制规则或关闭安全防护。
-- 官方：[规则入口](https://learn.chatgpt.com/docs/agent-configuration/agents-md)、[Skill 目录与调用](https://learn.chatgpt.com/docs/build-skills)、[记忆与必守规则的区别](https://learn.chatgpt.com/docs/customization/memories)。
-
-## Claude Code（本机）
-
-- 分发：从链接要求安装时，由 Agent 将完整 Skill 安装到 `~/.claude/skills/obs-connect/` 并读回，再在当前对话开始接入。已安装后可调用 `/obs-connect`。本 Skill 只依赖通用 `name`、`description` 和相对资源，不要求识别 Codex 专用 `agents/openai.yaml`。
-- 持久入口：保留用户级 `CLAUDE.md`（默认 `~/.claude/CLAUDE.md`），合入通用入口模板，**优先在托管块内增加原生 `@` 导入行**。导入行独立成行，使用真实绝对路径，每个空格前加反斜杠；不能加引号，也不能包在代码块/行内代码里。例如路径中的 `Design Docs` 应写成 `Design\ Docs`。完整文件留在 OBS，不复制到自动记忆里。自然语言“请去读取”与客户端原生导入分别记录，不能混报。
-- 先核实际配置目录和启动环境；设置了 `CLAUDE_CONFIG_DIR` 时按当前版本确认真实加载位置，不在两个位置各写一份。安装了 CLI 不代表已经有用户级规则文件。旧版本不能默认依赖 `AGENTS.md` 自动加载，直接使用 `CLAUDE.md` 入口；若要依赖 `AGENTS.md`，先核版本支持。
-- 只在 OBS 根目录放 `CLAUDE.md` 不足以覆盖从其他工程目录启动的会话。根据实际工作目录，采用正常的额外目录授权（如 `/add-dir` 或启动 `--add-dir`）；不能把已授权访问与已加载规则混为一谈。
-- 本地 Claude Code、Cowork 和云端会话的文件与配置加载边界不同。本机技能目录不自动让云端读写本机库；远程场景必须先证明实际文件通路，不能用云端同名目录充当本机 OBS。
-- 通过新会话的 `/memory`（查看已加载规则清单）或可取得的原生上下文信息，确认用户级文件及导入文件实际出现；该命令的名字不意味着应把规则写入 `MEMORY.md`。本分支适用于 Claude Code，不能直接套到 Claude 普通聊天、Cowork 或云端。
-- 官方：[Skill](https://code.claude.com/docs/en/skills)、[规则、导入与额外目录](https://code.claude.com/docs/en/memory)、[配置目录](https://code.claude.com/docs/en/claude-directory)。
-
-## WorkBuddy（桌面本地任务）
-
-- 分发：从链接开始时，Agent 优先使用当前版本实际可用的原生导入工具；只有已证实代码开发模式支持相应用户技能目录时，才采用目录安装。普通任务若只能界面操作，由 Agent 先取得 ZIP，再逐步引导“技能页 → 添加技能 → 上传技能”，完成后继续接入。自行上传的包不要声称可通过“市场搜索安装”，也不能把复制文件等同于普通任务已识别 Skill。
-- **首选持久入口：设置 → 个性化 → 给 WorkBuddy 的指令**。该字段的实际说明是持续遵守、对之后每次对话和任务默认生效；将保存入口合入这里，保留已有指令。**不得写入“长期记忆”或 `MEMORY.md`，也不写入“人设设定”**。禁止仅因某记忆文件“每次注入”就将它当作接入完成。
-- 使用实际可用且能明确对应上述字段的设置工具或 UI 自动编辑；先请求所需操作/系统授权，再由 Agent 填写保存读回。macOS 有命令工具时可用 `scripts/workbuddy_ui_macos.js`，具体见 `permissions.md`。不能根据 `MEMORY.md`、`USER.md`、`SOUL.md` 猜字段，不盲改内部 JSON 或数据库，不拿 CodeBuddy Code 的配置命令代替普通任务桌面接口。
-- 当前没有原生设置工具时，继续检查可用的电脑操作/系统自动化后端并申请授权，不直接转交用户粘贴正文。确实没有任何可启用的自动通路时，明确能力缺口与待完成状态，不能把长期记忆当替代，也不能把获得权限等同于已经具备工具。
-- 用户明确只用**代码开发模式**且未采用桌面指令入口时，可核当前 `.codebuddy` 配置支持后使用 `~/.codebuddy/CODEBUDDY.md`；保留原文，并仅报告经核验的代码任务作用范围。不要把它当成普通办公模式的通用全局入口。
-- 旧版本确实没有“给 WorkBuddy 的指令”时，再检查同义的用户级指令入口；确实仅有项目指令且用户接受这个范围时，才使用其指定的私有项目。不是因为无法自动操作已有字段就降为项目或记忆方案。
-- **修复误写**：用户授权修复后，先读并在库外备份原“指令”和错误位置的原文；只迁移本 Skill 的同目标入口。先保存到正确指令字段、读回完整正文和路径，再移除错误位置的对应区块并保存读回，其他记忆与人设保持原样。若边界/目标不明先核明；正确位置未保存成功就保留旧入口，不先删。界面富文本可能隐藏注释或归一化空行，要核完整语义和区块边界，不能只看编辑器短暂显示为空。
-- 项目指令会被项目任务继承，但项目配置可由成员共享；个人库路径与规则不写入团队共享项目。需要使用共享项目时先说明可见范围并等用户选择，默认采用个人入口或私有项目。
-- 客户端个人 Skill 与 Web/云上个人 Skill 不是同一份。本 Skill 接入本地 OBS；云上任务没有本地文件通道时报告未接通。项目资料引用也不等于本地目录写权限。
-- 保存后重新读取**“给 WorkBuddy 的指令”字段**，核其内容和目标库路径；回执写明该字段，不能只列出某个记忆文件已写。新对话是否实际执行仍单独验证。
-- 官方：[上传技能](https://www.codebuddy.cn/docs/workbuddy/From-Beginner-to-Expert-Guide/Function-Description/Skills-Market)、[项目指令及代码配置](https://www.codebuddy.cn/docs/workbuddy/From-Beginner-to-Expert-Guide/Function-Description/Project)、[用户配置目录](https://cloud.tencent.cn/document/product/1831/137016)。
-
-## 更新、迁移与不支持的入口
-
-检查已安装包和接入区块的实际版本；升级保留 OBS 现有规则，只补必要变化。路径迁移先确认新库，再只改当前宿主入口；多机各自绑定本机绝对路径。无法证明持久入口时，给本次可用方案并标注作用范围，不宣称全局安装完成。
-
-0.3.0 起的更新检查入口在三宿主中使用同一套协议，见 [更新与提醒](updates.md)。使用当前实际安装的脚本路径，状态按安装隔离。WorkBuddy 仍须保存到正确指令字段；不会因为 Skill 文件已升级就认为旧字段已经迁移。所有宿主的新对话实际触发须分别核验。
+官方依据：[Codex](https://learn.chatgpt.com/docs/agent-configuration/agents-md) · [Claude Code](https://code.claude.com/docs/en/memory) · [WorkBuddy 设置](https://www.codebuddy.cn/docs/workbuddy/From-Beginner-to-Expert-Guide/Function-Description/Setting) · [代码开发配置范围](https://www.codebuddy.cn/docs/workbuddy/From-Beginner-to-Expert-Guide/Function-Description/Project)。

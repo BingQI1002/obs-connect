@@ -85,6 +85,10 @@ function run(argv) {
   if(mode==='apply') {
     try {pinnedPlan=readPinnedPlan(input,argv[2]);}
     catch(error) {return JSON.stringify({status:'plan_invalid',message:String(error),saved_verified:false});}
+    if (/^\uFEFF?---\r?\n[\s\S]*?\r?\n---(?:\r?\n|$)/.test(pinnedPlan.before)) {
+      return JSON.stringify({status:'unsupported_rich_text',saved_verified:false,
+        message:'计划中的原指令含 YAML 元信息，此后端不能可靠替换；未操作界面。使用支持该编辑器的宿主设置工具后再继续，不重复尝试。'});
+    }
   }
   if(!$.AXIsProcessTrusted()) return JSON.stringify({status:'needs_system_permission',saved_verified:false,
     message:'当前执行宿主没有可用的辅助功能访问；Agent 先申请本次原生命令执行授权，再核 macOS 辅助功能/自动化授权'});
@@ -263,7 +267,10 @@ function run(argv) {
   let win, editorState, stage = 'settings-menu', ownEditor=false, baselineText=null,
       proposedText=null, didSave=false;
   try {
+    Application('WorkBuddy').activate();
     process.frontmost = true;
+    // Activation is asynchronous. Only treat later focus loss as intervention.
+    waitFor(() => process.frontmost(), 4);
     // Use the app's native Settings menu; do not guess screen coordinates.
     win = fieldWindow();
     if (!win) {
