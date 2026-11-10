@@ -87,7 +87,7 @@ function run(argv) {
     catch(error) {return JSON.stringify({status:'plan_invalid',message:String(error),saved_verified:false});}
     if (/^\uFEFF?---\r?\n[\s\S]*?\r?\n---(?:\r?\n|$)/.test(pinnedPlan.before)) {
       return JSON.stringify({status:'unsupported_rich_text',saved_verified:false,
-        message:'计划中的原指令含 YAML 元信息，此后端不能可靠替换；未操作界面。使用支持该编辑器的宿主设置工具后再继续，不重复尝试。'});
+        message:'计划中的原指令含 YAML 元信息，此后端不能可靠替换，未操作界面。Agent 应给出“设置 → 个性化 → 给 WorkBuddy 的指令”和已填好的 entry 正文，引导用户保存后再核对，不重复尝试。'});
     }
   }
   if(!$.AXIsProcessTrusted()) return JSON.stringify({status:'needs_system_permission',saved_verified:false,
@@ -375,6 +375,6 @@ function run(argv) {
     else if(/output_exists/.test(message)) status='inspection_output_exists';
     return JSON.stringify({status:status, stage:stage, message:message, saved_verified:false,
       cancelled_own_draft:cancelledOwnDraft,
-      next:'Agent 先核系统辅助功能/自动化授权或重新读取界面；不要要求用户复制粘贴，也不要退写 MEMORY.md'});
+      next:'缺权限时提示一次必要授权；仍无法自动操作时，给出准确设置入口和已填好的 entry 正文交接用户保存，不退写 MEMORY.md'});
   }
 }

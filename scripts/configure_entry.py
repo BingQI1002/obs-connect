@@ -53,9 +53,7 @@ def render_bridge(vault, host):
     block = block.replace("{{UPDATE_CHECK_SCRIPT}}", str(update_script))
     if host == "claude-code":
         native_import = "@" + rules.as_posix().replace(" ", "\\ ")
-        block = block.replace("## OBS 成果保存入口", "## OBS 成果保存入口\n\n" + native_import, 1)
-    elif host == "workbuddy":
-        block = block.replace("## OBS 成果保存入口", "OBS 成果保存入口", 1)
+        block = block.replace("OBS 成果保存入口", "OBS 成果保存入口\n\n" + native_import, 1)
     return block
 
 
@@ -112,6 +110,7 @@ def prepare(host, vault_arg, work_dir, config_root=None, before_ui_file=None):
     private_write(job / "preview.diff", preview.encode("utf-8"))
     return {"status": plan["status"], "host": host, "kind": kind, "target": target,
             "plan": str(job / "plan.json"), "plan_sha256": digest(plan_bytes), "preview": str(job / "preview.diff"),
+            "entry": block,
             "next": "申请该字段的自动化权限后自动应用" if kind == "ui-field" else "由 Agent 执行 apply；受限时申请宿主原生审批，再重跑同一计划"}
 
 
@@ -186,7 +185,7 @@ def main():
         result = apply_file(args.plan, args.plan_sha256) if args.command == "apply" else prepare(args.host, args.vault, args.work_dir, args.config_root, args.before_ui_file)
     except PermissionError as error:
         print(json.dumps({"status": "needs_permission", "target": str(error.filename or ""),
-                          "next": "Agent 应发起宿主原生写入/执行审批；批准后重跑同一计划，不要求用户粘贴正文"}, ensure_ascii=False))
+                          "next": "申请本次原生权限并续做；仍无法自动写入时，给出准确目标和已填好的 entry 正文交接用户保存；不绕过管理策略"}, ensure_ascii=False))
         return 3
     except (OSError, ValueError, KeyError) as error:
         print(json.dumps({"status": "error", "message": str(error)}, ensure_ascii=False))

@@ -1,6 +1,6 @@
 # Agent 安装入口
 
-版本：0.4.0。用户要求安装并启动时，安装后立即在当前对话执行 [Skill 最短流程](SKILL.md)。明确要求升级时沿用原库及入口，不重新选库；仅介绍或审阅仓库时不安装。裸链接意图不明时先核用途。
+版本：0.4.1。用户要求安装并启动时，安装后立即在当前对话执行 [Skill 最短流程](SKILL.md)。明确要求升级时沿用原库及入口，不重新选库；仅介绍或审阅仓库时不安装。裸链接意图不明时先核用途。
 
 ## 安装
 
@@ -32,8 +32,8 @@ obs-connect/
 
 ## 接入与升级
 
-安装后只做“确认目标库 → 必要时授权 → 自动写入并读回”。正确入口见 [宿主适配](references/platforms.md)；缺权限才读 [授权方法](references/permissions.md)。默认不运行写入测试、不要求新对话验收、不排查更新网络。备份与比对在内部完成，回复连接到的库及入口结果即可。
+安装后只做“确认目标库 → 必要时授权 → 自动写入并读回”。正确入口见 [宿主适配](references/platforms.md)；缺权限才读 [授权方法](references/permissions.md)。自动写入仍失败时，交接准确入口与已填好的短指令；用户保存后能读回就核对，不能读回就注明用户已确认。默认不运行写入测试、不要求新对话验收、不排查更新网络。备份与比对在内部完成，回复连接到的库及入口结果即可。
 
 更新脚本使用正式安装位置，不能指向下载暂存目录；更新失败不影响保存接入。升级按 [更新方法](references/updates.md) 沿用原库、保留自定义规则，只补必要入口差异。
 
-[固定版 ZIP](https://github.com/BingQI1002/obs-connect/releases/download/v0.4.0/obs-connect-v0.4.0.zip) · [最新版 ZIP](https://github.com/BingQI1002/obs-connect/releases/latest/download/obs-connect.zip)。两个附件内容相同，校验值随 Release 提供。
+[固定版 ZIP](https://github.com/BingQI1002/obs-connect/releases/download/v0.4.1/obs-connect-v0.4.1.zip) · [最新版 ZIP](https://github.com/BingQI1002/obs-connect/releases/latest/download/obs-connect.zip)。两个附件内容相同，校验值随 Release 提供。

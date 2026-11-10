@@ -1,4 +1,4 @@
 interface:
   display_name: "OBS 接入与检查"
-  short_description: "选库、必要授权、自动写入并读回，让文档和 HTML 保存到 OBS"
-  default_prompt: "请用 $obs-connect 接入 OBS，已有绑定就沿用，自动配置并读回全局入口。"
+  short_description: "自动接入 OBS，必要授权后仍失败时给出清楚的人工保存指引"
+  default_prompt: "请用 $obs-connect 接入 OBS，自动写入优先，做不到就给我准确入口和已填好的短指令。"
