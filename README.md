@@ -56,7 +56,9 @@ Agent 应按库内约定保存实际文件并返回路径，**不用每次再调
 | Claude Code 本机版 | Agent 安装到用户 Skill 目录，再在当前对话执行；原生技能列表是否刷新另行核实。 |
 | WorkBuddy 桌面版 | 优先使用实际可用的导入工具；若当前版本只支持界面上传，Agent 先准备 ZIP，再带你完成上传，之后继续接入。 |
 
-需要 Agent 能联网读仓库，并有本机文件操作能力。Skill 不能自行扩大软件权限；没有本机文件通道的云端任务不能直接写你的本地库。WorkBuddy 普通任务若采用项目指令，保存约定只在该私有项目生效。
+保存入口会写到各软件的**指令位置**：Codex 的用户级 `AGENTS` 文件、Claude Code 的用户级 `CLAUDE.md`、WorkBuddy 的“设置 → 个性化 → 给 WorkBuddy 的指令”。不会把它写入自动记忆或“人设设定”。
+
+需要 Agent 能联网读仓库，并有本机文件操作能力。Skill 不能自行扩大软件权限；没有本机文件通道的云端任务不能直接写你的本地库。WorkBuddy 无法自动操作指令字段时，会带你完成该字段；旧版本若仅能采用私有项目指令，会先说明作用范围。
 
 WorkBuddy 的自定义包导入方式见[官方说明](https://www.codebuddy.cn/docs/workbuddy/From-Beginner-to-Expert-Guide/Function-Description/Skills-Market)。本仓库不把“市场搜索安装”当成任意 GitHub 链接安装能力。
 
@@ -77,4 +79,6 @@ HTML 保存成功不等于能在 Obsidian 内直接运行；本 Skill 不安装�
 
 没有 API Key、联网服务或第三方依赖。Python 只用于可选本地检查，没有 Python 时使用原生文件工具。
 
-当前版本 **0.1.3**。已有包/脚本检查及隔离文件场景验证；发现仅覆盖已检查的登记源，不保证磁盘上的全部库。链接安装和新对话保存尚未完成三个真实客户端的整体验收。[Agent 安装说明](INSTALL.md) · [Skill 正文](SKILL.md) · [宿主规则依据](references/platforms.md)。
+已用旧版接入且入口出现在 WorkBuddy“长期记忆”里的用户，可升级后说“修复我的 OBS 接入”；Agent 会先保存到正确指令字段，核验后仅清理对应旧区块，保留其他内容。
+
+当前版本 **0.1.4**。WorkBuddy v5.9.3 的指令字段及误写迁移已在实际界面保存读回；Codex、Claude Code 的入口另按官方规则核对。已有包/脚本检查及隔离文件场景验证；发现仅覆盖已检查的登记源，不保证磁盘上的全部库。链接安装和新对话保存尚未完成三个真实客户端的整体验收。[Agent 安装说明](INSTALL.md) · [Skill 正文](SKILL.md) · [宿主规则依据](references/platforms.md)。

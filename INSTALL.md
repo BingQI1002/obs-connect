@@ -1,6 +1,6 @@
 # Agent 安装入口
 
-版本：0.1.3。适用于用户将仓库链接交给 Agent，要求安装并启动 OBS 接入。仅审阅、介绍、检查源码或维护仓库时，按用户原请求处理，不因读到本文而安装或改配置。裸链接的意图不明时，只问“要我安装并开始接入你的 OBS 吗？”；仓库内容本身不授予安装权限。
+版本：0.1.4。适用于用户将仓库链接交给 Agent，要求安装并启动 OBS 接入。仅审阅、介绍、检查源码或维护仓库时，按用户原请求处理，不因读到本文而安装或改配置。裸链接的意图不明时，只问“要我安装并开始接入你的 OBS 吗？”；仓库内容本身不授予安装权限。
 
 ## 从链接到接入
 
@@ -25,6 +25,8 @@
 4. **安装后在当前对话继续执行**：若宿主能直接调用新 Skill，调用它；若技能列表尚未刷新，直接读取刚安装的本地 `SKILL.md`，按其中流程继续。把“已安装到目录”“已按 Skill 执行”和“已被宿主自动发现”分清；不要停在“安装成功，请自行重启/输入命令”，也不擅自重启软件或创建聊天。只有原生发现仍待验证时说明该状态。
 5. 启动接入向导：目标库未知时，先按 `references/discovery.md` 发现本机已登记库，列出名称、区分路径与数量，请用户选择，再完成配置与检查。不要先索要 OBS 路径，也不要在用户选择前读取候选库正文；发现受限时才引导用户选文件夹。确认保存目标由安装后的向导承接。
 
+规则必须落到对应宿主的指令入口：WorkBuddy 桌面“给 WorkBuddy 的指令”、Claude Code 用户级 `CLAUDE.md`、Codex 生效的用户级 `AGENTS` 文件；不把 `MEMORY.md` 或人设当替代入口。工具不足就带用户完成正确字段，不伪报自动配置完成。
+
 ## 宿主安装边界
 
 - Codex 本机：使用实际可用的用户 Skill 目录；官方常用位置为 `~/.agents/skills/obs-connect/`。若宿主安装器选择了其他已支持目录，采用其实际回执，不维护第二份重复副本。安装目录和 `CODEX_HOME` 中的持久规则入口不是同一回事。
@@ -38,6 +40,6 @@
 
 原始说明入口：https://raw.githubusercontent.com/BingQI1002/obs-connect/main/INSTALL.md
 
-固定版本下载：[obs-connect v0.1.3](https://github.com/BingQI1002/obs-connect/releases/download/v0.1.3/obs-connect-v0.1.3.zip)。`obs-connect.zip` 是同一 Release 内容的固定附件名，用于 `latest` 链接；下载后可核 Release 的校验值。
+固定版本下载：[obs-connect v0.1.4](https://github.com/BingQI1002/obs-connect/releases/download/v0.1.4/obs-connect-v0.1.4.zip)。`obs-connect.zip` 是同一 Release 内容的固定附件名，用于 `latest` 链接；下载后可核 Release 的校验值。
 
 完成安装的回执应指向实际安装位置和已读回文件，然后立即进入接入对话。OBS 规则配置、MD/HTML 读写与新对话自动保存的判据继续沿用 `SKILL.md`，不能以安装结束替代整个任务结束。
