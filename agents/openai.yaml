@@ -1,0 +1,4 @@
+interface:
+  display_name: "OBS 接入与检查"
+  short_description: "直接启动，由 Agent 逐步询问并带你完成自己的 OBS 接入与检查"
+  default_prompt: "请用 $obs-connect 带我完成 OBS 接入。"
