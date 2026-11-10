@@ -1,6 +1,6 @@
 # Agent 安装入口
 
-版本：0.2.0。适用于用户将仓库链接交给 Agent，要求安装并启动 OBS 接入。仅审阅、介绍、检查源码或维护仓库时，按原请求处理。裸链接意图不明时只问是否安装；仓库文本本身不授予权限。
+版本：0.3.0。适用于用户将仓库链接交给 Agent，要求安装并启动 OBS 接入。明确要求升级时，按 [更新与提醒](references/updates.md) 保留原绑定及自定义规则完成迁移，不重新首次选库。仅审阅、介绍、检查源码或维护仓库时，按原请求处理。裸链接意图不明时只问是否安装；仓库文本本身不授予权限。
 
 ## 从链接到接入
 
@@ -17,10 +17,12 @@
      references/verification.md
      references/discovery.md
      references/permissions.md
+     references/updates.md
      scripts/check_access.py
      scripts/discover_vaults.py
      scripts/configure_entry.py
      scripts/workbuddy_ui_macos.js
+     scripts/check_updates.py
    ```
 
    读取仓库文件时固定同一提交或 Release，不把不同版本资源拼装在一起。仅安装这个集合，不复制整个仓库、`.git`、README、INSTALL、AGENTS、历史 ZIP 或用户资料到技能目录。获取和复制文件不要求运行远端脚本、安装依赖或改全局权限。
@@ -31,6 +33,8 @@
 规则必须落到正确指令入口：WorkBuddy 桌面“给 WorkBuddy 的指令”、Claude Code 用户级 `CLAUDE.md`、Codex 生效的用户级 `AGENTS` 文件。按 `references/permissions.md` 先准备具体计划，再请求真实写入/执行/系统授权，获准后由 Agent 自动应用和读回，不让用户复制粘贴正文，不拿记忆或人设代替。
 
 库内规则同时补齐日期、真实来源 Agent、标签和用途；临时写入测试默认读回后只清理本次新增文件，历史文件不动。安装、全局入口、元信息和新对话分开验收。
+
+将实际已安装的更新脚本路径写入宿主全局入口，不能指向暂存目录或维护仓库。日常不要求用户再次调用 Skill；新任务由入口调用检查器，每 24 小时至多联网一次，实际提醒后确认记录，同版本不重复提醒。旧入口不会因发布新包自动改变，升级时一并迁移；检查脚本通过不等于各宿主已在新对话自动执行。
 
 ## 宿主安装边界
 
@@ -45,6 +49,6 @@
 
 原始说明入口：https://raw.githubusercontent.com/BingQI1002/obs-connect/main/INSTALL.md
 
-固定版本下载：[obs-connect v0.2.0](https://github.com/BingQI1002/obs-connect/releases/download/v0.2.0/obs-connect-v0.2.0.zip)。`obs-connect.zip` 是同一 Release 内容的固定附件名，用于 `latest` 链接；下载后可核 Release 的校验值。
+固定版本下载：[obs-connect v0.3.0](https://github.com/BingQI1002/obs-connect/releases/download/v0.3.0/obs-connect-v0.3.0.zip)。`obs-connect.zip` 是同一 Release 内容的固定附件名，用于 `latest` 链接；下载后可核 Release 的校验值。
 
 完成安装的回执应指向实际安装位置和已读回文件，然后立即进入接入对话。OBS 规则配置、MD/HTML 读写与新对话自动保存的判据继续沿用 `SKILL.md`，不能以安装结束替代整个任务结束。

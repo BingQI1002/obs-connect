@@ -1,4 +1,4 @@
 interface:
   display_name: "OBS 接入与检查"
-  short_description: "选库后自动配置全局入口，必要时申请授权，并检查日期、来源和标签"
-  default_prompt: "请用 $obs-connect 帮我选库并自动完成 OBS 接入，需要权限时向我申请。"
+  short_description: "选库并自动接入 OBS，检查成果元信息，支持低频更新提醒与保留规则升级"
+  default_prompt: "请用 $obs-connect 帮我接入 OBS；已接入时检查现状，检查更新或升级时保留原库和自定义规则。"

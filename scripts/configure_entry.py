@@ -42,11 +42,15 @@ def merge_block(original, block):
 
 def render_bridge(vault, host):
     rules = vault / "CLAUDE.md"
-    for value in [str(vault), str(rules)]:
+    update_script = SKILL / "scripts/check_updates.py"
+    if not update_script.is_file():
+        raise ValueError("已安装 Skill 缺少更新脚本；先安装完整文件集")
+    for value in [str(vault), str(rules), str(update_script)]:
         if any(char in value for char in ["\n", "\r", "\x00"]):
             raise ValueError("库路径含不支持的控制字符")
     block = (SKILL / "assets/bridge.md").read_text(encoding="utf-8").strip()
     block = block.replace("{{RULES_ABSOLUTE_PATH}}", str(rules)).replace("{{VAULT_ABSOLUTE_PATH}}", str(vault))
+    block = block.replace("{{UPDATE_CHECK_SCRIPT}}", str(update_script))
     if host == "claude-code":
         native_import = "@" + rules.as_posix().replace(" ", "\\ ")
         block = block.replace("## OBS 成果保存入口", "## OBS 成果保存入口\n\n" + native_import, 1)
