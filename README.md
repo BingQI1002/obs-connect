@@ -1,48 +1,71 @@
-# OBS 接入与检查 · 0.1.1
+# OBS 接入与检查
 
-下载 [Skill ZIP](dist/obs-connect-v0.1.1.zip)，安装后直接启动 Skill 即可。Agent 会主动询问必要信息，带着完成接入，让文档、HTML 等交付文件默认存到使用者自己的 Obsidian 库。此说明只用于需要时查安装方式，不用先读完才开始。
+让 Codex、Claude Code、WorkBuddy 把生成的文档、HTML 等成果保存到你自己的 Obsidian 库。
+
+**把链接发给 Agent，由它安装并开始接入；你只需回答必要问题。** 不用提前创建规则文件，也不用自己研究配置目录。
 
 ## 怎么开始
 
-安装后直接选择或调用“OBS 接入与检查”，不用附加提示词。也可以说：
+把这个链接发给你正在使用的 Agent：
 
-> 帮我接入 OBS。
+```text
+https://github.com/BingQI1002/obs-connect
+```
 
-Agent 会询问要接入哪个库；不知道路径时，它会帮助你找。然后由它创建或合并 `CLAUDE.md`、设置入口并检查读写。需要本人授权或点击界面时，它一次提示当前这一步，完成后继续，不让你照整份教程操作。已有规则会保留；真正冲突的条款由本人决定。每个软件各接入一次，共用库内一份保存约定，日常不用重复启动接入 Skill。
+如果 Agent 只介绍了仓库，补一句 **“安装并启动”**。也可以第一次就发送这一行：
 
-## 三种软件怎样安装
+```text
+安装并启动这个 Skill：https://github.com/BingQI1002/obs-connect
+```
 
-| 软件 | 安装方式 | 安装后调用 |
-|---|---|---|
-| Codex 本机版 | 解压后，将整个 `obs-connect` 文件夹放入 `~/.agents/skills/`，或使用当前客户端实际支持的本地安装入口；也可把解压目录交给 Codex，让它安装到个人 Skill 目录，保留已有同名版本。 | `$obs-connect` |
-| Claude Code 本机版 | 解压后，将整个文件夹放入 `~/.claude/skills/`；也可让 Claude Code 从解压目录安装，保留已有同名版本。 | `/obs-connect` |
-| WorkBuddy 桌面版 | 在技能页选择“添加技能 → 上传技能”，上传原 ZIP；私人上传包使用此入口，不能按市场技能搜索安装。 | 选择该 Skill，或说“请使用 OBS 接入与检查” |
+Agent 的[安装入口在这里](INSTALL.md)：它应先识别当前软件、安装完整 Skill，然后在**同一个对话**中开始询问，不停在“安装成功，请自己输入命令”。裸链接是否被识别为安装请求，由各 Agent 决定；它不是各软件统一的自动安装按钮。
 
-`~` 指自己的用户主目录，Windows 通常是 `C:\Users\自己的用户名`。不同机器使用各自真实的库路径。不要把整个 ZIP 文件作为一个文件塞进技能目录；目录结构应是 `<技能目录>/obs-connect/SKILL.md`。
+## 接下来怎么用
 
-本包只有接入说明、规则模板和一个可选本地检查脚本；没有联网服务或第三方依赖。不需要 API Key，不要求安装 Obsidian 插件。Python 仅用于可选检查，无 Python 时 Agent 可用文件工具完成。
+Agent 会先问：**“你想接入哪个 Obsidian 库？”**
 
-## 接入后会发生什么
+告诉它库文件夹的位置即可。不知道路径就说“不知道怎么找”，由它带着定位。后面的规则创建、已有规则合并和文件读写检查，都由 Agent 完成。需要你授权目录或点击界面时，它一次只提示当前这一步，完成后继续。
 
-- 库根目录的 `CLAUDE.md` 保存具体成果约定；每个 Agent 自己的持久入口指向它。
-- 优先沿用原成果目录；没有约定才用 `AI成果/`。普通聊天不自动存档，不重建整库，不把工程依赖和日志塞入库。
-- 接入时生成两份独立的 Markdown、HTML 测试文件并读回。它们标明接入测试，可自行保留或删除。
-- Agent 会告诉你改了哪些文件、库外恢复副本的位置、已验证什么及尚缺什么。文件访问权限由各软件授权机制决定，Skill 本身不会扩大权限。
+接入完成后，日常照常提需求，例如：
 
-WorkBuddy 普通办公任务若只能使用项目“指令”，规则仅在该私有项目生效；不能据此称全局生效。不要把私人库路径和规则粘进团队共享项目。云端/远程任务如果没有本机文件通道，不能靠这个包直接写本机 OBS。
+> 帮我整理一份活动方案，再做一个 HTML 展示页。
 
-## Agent 会引导最后的新对话检查
+Agent 应按库内约定保存实际文件并返回路径，**不用每次再调用接入 Skill，也不用重复提醒存到 OBS**。每个软件各接入一次，共用库内一份规则。
 
-接入和读写检查完成后，Agent 会请你新开普通对话，给出下面这句话直接发送；如果使用 WorkBuddy 项目入口，它会说明要在同一私有项目中新开任务。这一步不再调用本 Skill：
+## 它会保存到哪里
 
-> 请制作一份三条建议的番茄钟使用说明，分别交付 Markdown 文档和一个不依赖外网的 HTML 页面。
+- 优先沿用你已有的成果目录；没有约定时使用库内的 `AI成果/`。
+- 文本成果优先保存 Markdown；需要 Word、PDF、HTML 时保存对应实际文件，HTML 所需资源一起保留。
+- 保留已有 `CLAUDE.md` 和目录结构；冲突条款先与你核明，不重建整库。
+- 默认保存独立交付成果；普通闲聊不自动建档，工程依赖、构建缓存和完整日志留在工作目录。
 
-看它是否自行把两份真实文件保存到约定目录并返回路径。当前能写文件和新对话会自动保存，是两个不同检查。首次通过也不代表所有软件、项目和未来版本都已稳定。
+## 哪些软件能用
 
-后续可直接说“只读检查我的 OBS 接入”“修复我的 OBS 接入”或“我把库搬到了……，请迁移接入”。已有规则没冲突时可重复运行，不应重复堆入口。HTML 已保存不等于能在 Obsidian 内直接运行；本包不安装 HTML 预览插件。
+| 软件 | 从链接开始后的处理 |
+|---|---|
+| Codex 本机版 | Agent 使用可用安装器或文件工具安装，读回 Skill 后立即开始接入。 |
+| Claude Code 本机版 | Agent 安装到用户 Skill 目录，再在当前对话执行；原生技能列表是否刷新另行核实。 |
+| WorkBuddy 桌面版 | 优先使用实际可用的导入工具；若当前版本只支持界面上传，Agent 先准备 ZIP，再带你完成上传，之后继续接入。 |
 
-## 当前验证范围
+需要 Agent 能联网读仓库，并有本机文件操作能力。Skill 不能自行扩大软件权限；没有本机文件通道的云端任务不能直接写你的本地库。WorkBuddy 普通任务若采用项目指令，保存约定只在该私有项目生效。
 
-此版按三家官方入口制作适配，做包结构检查、可选脚本执行和隔离文件场景验证；没有在收件人的真实软件、系统或库里运行，也尚未完成三个真实客户端的新对话验收。以对方实际接入回执为准。
+WorkBuddy 的自定义包导入方式见[官方说明](https://www.codebuddy.cn/docs/workbuddy/From-Beginner-to-Expert-Guide/Function-Description/Skills-Market)。本仓库不把“市场搜索安装”当成任意 GitHub 链接安装能力。
 
-官方依据：[Codex 技能](https://learn.chatgpt.com/docs/build-skills)、[Codex 持久规则](https://learn.chatgpt.com/docs/agent-configuration/agents-md)、[Claude Code 技能](https://code.claude.com/docs/en/skills)、[Claude Code 规则](https://code.claude.com/docs/en/memory)、[WorkBuddy 技能上传](https://www.codebuddy.cn/docs/workbuddy/From-Beginner-to-Expert-Guide/Function-Description/Skills-Market)、[WorkBuddy 项目指令](https://www.codebuddy.cn/docs/workbuddy/From-Beginner-to-Expert-Guide/Function-Description/Project)。文档核对日期：2026-11-10。
+## 怎么确认接好了
+
+Agent 会生成 Markdown 和 HTML 测试文件，读回核对，并给你真实路径。然后引导你在新对话中做一次不提醒保存的测试，确认规则会继续生效。**当前能写文件和新对话会自动保存，会分别说明结果。**
+
+HTML 保存成功不等于能在 Obsidian 内直接运行；本 Skill 不安装预览插件。新版本或新电脑上的实际结果，以接入检查为准。
+
+## 备用下载与安装
+
+优先把上面的链接交给 Agent。只有它无法代办安装时，才需要下面的备用方式：
+
+- [下载最新版 Skill ZIP](https://github.com/BingQI1002/obs-connect/releases/latest/download/obs-connect.zip) · [查看版本与校验值](https://github.com/BingQI1002/obs-connect/releases/latest)
+- Codex：解压后整个 `obs-connect` 文件夹放到实际支持的用户 Skill 目录，常用为 `~/.agents/skills/`；之后调用 `$obs-connect`。
+- Claude Code：文件夹放入 `~/.claude/skills/`；之后调用 `/obs-connect`。
+- WorkBuddy：技能 → 添加技能 → 上传技能，选择 ZIP；完成后告诉 Agent“已上传，请继续”。
+
+没有 API Key、联网服务或第三方依赖。Python 只用于可选本地检查，没有 Python 时使用原生文件工具。
+
+当前版本 **0.1.2**。已有包/脚本检查及隔离文件场景验证；链接安装和新对话保存尚未完成三个真实客户端的整体验收。[Agent 安装说明](INSTALL.md) · [Skill 正文](SKILL.md) · [宿主规则依据](references/platforms.md)。
