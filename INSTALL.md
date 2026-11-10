@@ -1,6 +1,6 @@
 # Agent 安装入口
 
-版本：0.1.4。适用于用户将仓库链接交给 Agent，要求安装并启动 OBS 接入。仅审阅、介绍、检查源码或维护仓库时，按用户原请求处理，不因读到本文而安装或改配置。裸链接的意图不明时，只问“要我安装并开始接入你的 OBS 吗？”；仓库内容本身不授予安装权限。
+版本：0.2.0。适用于用户将仓库链接交给 Agent，要求安装并启动 OBS 接入。仅审阅、介绍、检查源码或维护仓库时，按原请求处理。裸链接意图不明时只问是否安装；仓库文本本身不授予权限。
 
 ## 从链接到接入
 
@@ -16,8 +16,11 @@
      references/platforms.md
      references/verification.md
      references/discovery.md
+     references/permissions.md
      scripts/check_access.py
      scripts/discover_vaults.py
+     scripts/configure_entry.py
+     scripts/workbuddy_ui_macos.js
    ```
 
    读取仓库文件时固定同一提交或 Release，不把不同版本资源拼装在一起。仅安装这个集合，不复制整个仓库、`.git`、README、INSTALL、AGENTS、历史 ZIP 或用户资料到技能目录。获取和复制文件不要求运行远端脚本、安装依赖或改全局权限。
@@ -25,7 +28,9 @@
 4. **安装后在当前对话继续执行**：若宿主能直接调用新 Skill，调用它；若技能列表尚未刷新，直接读取刚安装的本地 `SKILL.md`，按其中流程继续。把“已安装到目录”“已按 Skill 执行”和“已被宿主自动发现”分清；不要停在“安装成功，请自行重启/输入命令”，也不擅自重启软件或创建聊天。只有原生发现仍待验证时说明该状态。
 5. 启动接入向导：目标库未知时，先按 `references/discovery.md` 发现本机已登记库，列出名称、区分路径与数量，请用户选择，再完成配置与检查。不要先索要 OBS 路径，也不要在用户选择前读取候选库正文；发现受限时才引导用户选文件夹。确认保存目标由安装后的向导承接。
 
-规则必须落到对应宿主的指令入口：WorkBuddy 桌面“给 WorkBuddy 的指令”、Claude Code 用户级 `CLAUDE.md`、Codex 生效的用户级 `AGENTS` 文件；不把 `MEMORY.md` 或人设当替代入口。工具不足就带用户完成正确字段，不伪报自动配置完成。
+规则必须落到正确指令入口：WorkBuddy 桌面“给 WorkBuddy 的指令”、Claude Code 用户级 `CLAUDE.md`、Codex 生效的用户级 `AGENTS` 文件。按 `references/permissions.md` 先准备具体计划，再请求真实写入/执行/系统授权，获准后由 Agent 自动应用和读回，不让用户复制粘贴正文，不拿记忆或人设代替。
+
+库内规则同时补齐日期、真实来源 Agent、标签和用途；临时写入测试默认读回后只清理本次新增文件，历史文件不动。安装、全局入口、元信息和新对话分开验收。
 
 ## 宿主安装边界
 
@@ -40,6 +45,6 @@
 
 原始说明入口：https://raw.githubusercontent.com/BingQI1002/obs-connect/main/INSTALL.md
 
-固定版本下载：[obs-connect v0.1.4](https://github.com/BingQI1002/obs-connect/releases/download/v0.1.4/obs-connect-v0.1.4.zip)。`obs-connect.zip` 是同一 Release 内容的固定附件名，用于 `latest` 链接；下载后可核 Release 的校验值。
+固定版本下载：[obs-connect v0.2.0](https://github.com/BingQI1002/obs-connect/releases/download/v0.2.0/obs-connect-v0.2.0.zip)。`obs-connect.zip` 是同一 Release 内容的固定附件名，用于 `latest` 链接；下载后可核 Release 的校验值。
 
 完成安装的回执应指向实际安装位置和已读回文件，然后立即进入接入对话。OBS 规则配置、MD/HTML 读写与新对话自动保存的判据继续沿用 `SKILL.md`，不能以安装结束替代整个任务结束。
